@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пятнашки - Классическая головоломка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat span {
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 4px;
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            background: #2d3748;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .tile {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            user-select: none;
+        }
+
+        .tile:hover {
+            transform: scale(0.98);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .empty {
+            background: transparent;
+            box-shadow: none;
+            cursor: default;
+            visibility: hidden;
+        }
+
+        .empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .controls {
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #shuffleBtn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+
+        #solveBtn {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+
+        .victory {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .victory.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .victory h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .victory p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .difficulty {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .instructions {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .instructions li:before {
+            content: "➡️";
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 500px) {
+            .game-board {
+                height: 300px;
+                max-width: 300px;
+            }
+            
+            .tile {
+                font-size: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 200px;
+            }
+        }
+
+        .tile.moving {
+            animation: moveTile 0.3s ease;
+        }
+
+        @keyframes moveTile {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff0000;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Пятнашки</h1>
+        
+        <div class="game-info">
+            <div class="stat">
+                Ходы: <span id="moves">0</span>
+            </div>
+            <div class="stat">
+                Время: <span id="timer">00:00</span>
+            </div>
+        </div>
+
+        <div class="difficulty">
+            <button class="difficulty-btn" onclick="setDifficulty(3)">3×3</button>
+            <button class="difficulty-btn" onclick="setDifficulty(4)">4×4</button>
+            <button class="difficulty-btn" onclick="setDifficulty(5)">5×5</button>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+            <!-- Плитки будут сгенерированы JavaScript -->
+        </div>
+
+        <div class="controls">
+            <button id="shuffleBtn">Перемешать</button>
+            <button id="newGameBtn">Новая игра</button>
+            <button id="solveBtn">Решить</button>
+        </div>
+
+        <div class="instructions">
+            <h3>Как играть:</h3>
+            <ul>
+                <li>Кликайте на плитки, чтобы перемещать их в пустое место</li>
+                <li>Расположите плитки в порядке от 1 до 15</li>
+                <li>Пустая ячейка должна быть в правом нижнем углу</li>
+                <li>Старайтесь решить головоломку за минимальное количество ходов и времени</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="victory" id="victoryScreen">
+        <h2>🎉 Поздравляем!</h2>
+        <p>Вы решили головоломку!</p>
+        <p>Ходов: <span id="finalMoves">0</span></p>
+        <p>Время: <span id="finalTime">00:00</span></p>
+        <button onclick="hideVictory()">Играть снова</button>
+    </div>
+
+    <script>
+        class Game15 {
+            constructor() {
+                this.gameBoard = document.getElementById('gameBoard');
+                this.movesElement = document.getElementById('moves');
+                this.timerElement = document.getElementById('timer');
+                this.victoryScreen = document.getElementById('victoryScreen');
+                this.finalMovesElement = document.getElementById('finalMoves');
+                this.finalTimeElement = document.getElementById('finalTime');
+                
+                this.boardSize = 4;
+                this.board = [];
+                this.emptyPos = { row: 0, col: 0 };
+                this.moves = 0;
+                this.timer = 0;
+                this.timerInterval = null;
+                this.gameStarted = false;
+                
+                this.init();
+                this.setupEventListeners();
+            }
+            
+            init() {
+                this.stopTimer();
+                this.moves = 0;
+                this.timer = 0;
+                this.gameStarted = false;
+                this.updateUI();
+                
+                this.createBoard();
+                this.renderBoard();
+            }
+            
+            createBoard() {
+                this.board = [];
+                let counter = 1;
+                
+                for (let i = 0; i < this.boardSize; i++) {
+                    this.board[i] = [];
+                    for (let j = 0; j < this.boardSize; j++) {
+                        if (i === this.boardSize - 1 && j === this.boardSize - 1) {
+                            this.board[i][j] = 0;
+                            this.emptyPos = { row: i, col: j };
+                        } else {
+                            this.board[i][j] = counter++;
+                        }
+                    }
+                }
+            }
+            
+            renderBoard() {
+                this.gameBoard.innerHTML = '';
+                this.gameBoard.style.gridTemplateColumns = `repeat(${this.boardSize}, 1fr)`;
+                this.gameBoard.style.gridTemplateRows = `repeat(${this.boardSize}, 1fr)`;
+                
+                for (let i = 0; i < this.boardSize; i++) {
+                    for (let j = 0; j < this.boardSize; j++) {
+                        const value = this.board[i][j];
+                        const tile = document.createElement('div');
+                        
+                        if (value === 0) {
+                            tile.className = 'tile empty';
+                            tile.innerHTML = '';
+                        } else {
+                            tile.className = 'tile';
+                            tile.innerHTML = value;
+                            tile.dataset.row = i;
+                            tile.dataset.col = j;
+                            tile.addEventListener('click', (e) => {
+                                const row = parseInt(e.target.dataset.row);
+                                const col = parseInt(e.target.dataset.col);
+                                this.moveTile(row, col);
+                            });
+                        }
+                        
+                        this.gameBoard.appendChild(tile);
+                    }
+                }
+            }
+            
+            moveTile(row, col) {
+                if (!this.isValidMove(row, col)) return;
+                
+                if (!this.gameStarted) {
+                    this.startTimer();
+                    this.gameStarted = true;
+                }
+                
+                // Анимация перемещения
+                const tile = this.gameBoard.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                if (tile) {
+                    tile.classList.add('moving');
+                    setTimeout(() => tile.classList.remove('moving'), 300);
+                }
+                
+                // Обмен значениями
+                this.board[this.emptyPos.row][this.emptyPos.col] = this.board[row][col];
+                this.board[row][col] = 0;
+                this.emptyPos = { row, col };
+                
+                this.moves++;
+                this.updateUI();
+                this.renderBoard();
+                
+                if (this.checkWin()) {
+                    this.endGame();
+                }
+            }
+            
+            isValidMove(row, col) {
+                const rowDiff = Math.abs(row - this.emptyPos.row);
+                const colDiff = Math.abs(col - this.emptyPos.col);
+                
+                return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+            }
+            
+            shuffleBoard() {
+                if (!this.gameStarted) {
+                    this.startTimer();
+                    this.gameStarted = true;
+                }
+                
+                // Совершаем много случайных ходов
+                const directions = [
+                    { row: -1, col: 0 }, // вверх
+                    { row: 1, col: 0 },  // вниз
+                    { row: 0, col: -1 }, // влево
+                    { row: 0, col: 1 }   // вправо
+                ];
+                
+                for (let i = 0; i < 1000; i++) {
+                    const validMoves = directions.filter(dir => {
+                        const newRow = this.emptyPos.row + dir.row;
+                        const newCol = this.emptyPos.col + dir.col;
+                        return newRow >= 0 && newRow < this.boardSize && 
+                               newCol >= 0 && newCol < this.boardSize;
+                    });
+                    
+                    if (validMoves.length > 0) {
+                        const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+                        const newRow = this.emptyPos.row + randomMove.row;
+                        const newCol = this.emptyPos.col + randomMove.col;
+                        
+                        // Перемещаем плитку
+                        this.board[this.emptyPos.row][this.emptyPos.col] = this.board[newRow][newCol];
+                        this.board[newRow][newCol] = 0;
+                        this.emptyPos = { row: newRow, col: newCol };
+                    }
+                }
+                
+                this.moves = 0;
+                this.updateUI();
+                this.renderBoard();
+            }
+            
+            checkWin() {
+                let counter = 1;
+                for (let i = 0; i < this.boardSize; i++) {
+                    for (let j = 0; j < this.boardSize; j++) {
+                        if (i === this.boardSize - 1 && j === this.boardSize - 1) {
+                            if (this.board[i][j] !== 0) return false;
+                        } else {
+                            if (this.board[i][j] !== counter++) return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            
+            updateUI() {
+                this.movesElement.textContent = this.moves;
+                
+                const minutes = Math.floor(this.timer / 60);
+                const seconds = this.timer % 60;
+                this.timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            startTimer() {
+                this.stopTimer();
+                this.timerInterval = setInterval(() => {
+                    this.timer++;
+                    this.updateUI();
+                }, 1000);
+            }
+            
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+            
+            endGame() {
+                this.stopTimer();
+                this.finalMovesElement.textContent = this.moves;
+                this.finalTimeElement.textContent = this.timerElement.textContent;
+                this.victoryScreen.classList.add('show');
+                this.createConfetti();
+            }
+            
+            createConfetti() {
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            document.body.removeChild(confetti);
+                        }
+                    }, 5000);
+                }
+            }
+            
+            solvePuzzle() {
+                if (!this.gameStarted) {
+                    this.startTimer();
+                    this.gameStarted = true;
+                }
+                
+                // Просто восстанавливаем решенное состояние
+                this.createBoard();
+                this.renderBoard();
+                this.moves = 0;
+                this.updateUI();
+                this.endGame();
+            }
+            
+            setDifficulty(size) {
+                this.boardSize = size;
+                this.init();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('shuffleBtn').addEventListener('click', () => this.shuffleBoard());
+                document.getElementById('newGameBtn').addEventListener('click', () => this.init());
+                document.getElementById('solveBtn').addEventListener('click', () => this.solvePuzzle());
+                
+                // Обработка клавиатуры
+                document.addEventListener('keydown', (e) => {
+                    if (!this.gameStarted) {
+                        this.startTimer();
+                        this.gameStarted = true;
+                    }
+                    
+                    let moveRow = this.emptyPos.row;
+                    let moveCol = this.emptyPos.col;
+                    
+                    switch(e.key) {
+                        case 'ArrowUp':
+                            moveRow++;
+                            break;
+                        case 'ArrowDown':
+                            moveRow--;
+                            break;
+                        case 'ArrowLeft':
+                            moveCol++;
+                            break;
+                        case 'ArrowRight':
+                            moveCol--;
+                            break;
+                        default:
+                            return;
+                    }
+                    
+                    if (moveRow >= 0 && moveRow < this.boardSize && moveCol >= 0 && moveCol < this.boardSize) {
+                        this.moveTile(moveRow, moveCol);
+                    }
+                });
+            }
+        }
+        
+        // Глобальные функции для кнопок
+        function setDifficulty(size) {
+            game.setDifficulty(size);
+        }
+        
+        function hideVictory() {
+            document.getElementById('victoryScreen').classList.remove('show');
+            game.init();
+        }
+        
+        // Инициализация игры
+        const game = new Game15();
+    </script>
+</body>
+</html>
