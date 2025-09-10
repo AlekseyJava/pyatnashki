@@ -440,39 +440,76 @@
                 return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
             }
             
+            // Проверка, решаема ли головоломка
+            isSolvable() {
+                // Для головоломки 15 нужно посчитать количество инверсий
+                let inversions = 0;
+                const flatBoard = this.board.flat().filter(num => num !== 0);
+                
+                for (let i = 0; i < flatBoard.length; i++) {
+                    for (let j = i + 1; j < flatBoard.length; j++) {
+                        if (flatBoard[i] > flatBoard[j]) {
+                            inversions++;
+                        }
+                    }
+                }
+                
+                // Для головоломки с четным размером (4x4) нужно учесть положение пустой клетки
+                if (this.boardSize % 2 === 0) {
+                    // Пустая клетка должна быть на четной строке снизу (считая с 1)
+                    const emptyRowFromBottom = this.boardSize - this.emptyPos.row;
+                    return (emptyRowFromBottom % 2 === 0) === (inversions % 2 === 1);
+                } else {
+                    // Для нечетного размера количество инверсий должно быть четным
+                    return inversions % 2 === 0;
+                }
+            }
+            
             shuffleBoard() {
                 if (!this.gameStarted) {
                     this.startTimer();
                     this.gameStarted = true;
                 }
                 
-                // Совершаем много случайных ходов
-                const directions = [
-                    { row: -1, col: 0 }, // вверх
-                    { row: 1, col: 0 },  // вниз
-                    { row: 0, col: -1 }, // влево
-                    { row: 0, col: 1 }   // вправо
-                ];
-                
-                for (let i = 0; i < 1000; i++) {
-                    const validMoves = directions.filter(dir => {
-                        const newRow = this.emptyPos.row + dir.row;
-                        const newCol = this.emptyPos.col + dir.col;
-                        return newRow >= 0 && newRow < this.boardSize && 
-                               newCol >= 0 && newCol < this.boardSize;
-                    });
+                // Совершаем много случайных ходов, пока не получим решаемую комбинацию
+                let attempts = 0;
+                do {
+                    // Совершаем много случайных ходов
+                    const directions = [
+                        { row: -1, col: 0 }, // вверх
+                        { row: 1, col: 0 },  // вниз
+                        { row: 0, col: -1 }, // влево
+                        { row: 0, col: 1 }   // вправо
+                    ];
                     
-                    if (validMoves.length > 0) {
-                        const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
-                        const newRow = this.emptyPos.row + randomMove.row;
-                        const newCol = this.emptyPos.col + randomMove.col;
+                    for (let i = 0; i < 1000; i++) {
+                        const validMoves = directions.filter(dir => {
+                            const newRow = this.emptyPos.row + dir.row;
+                            const newCol = this.emptyPos.col + dir.col;
+                            return newRow >= 0 && newRow < this.boardSize && 
+                                   newCol >= 0 && newCol < this.boardSize;
+                        });
                         
-                        // Перемещаем плитку
-                        this.board[this.emptyPos.row][this.emptyPos.col] = this.board[newRow][newCol];
-                        this.board[newRow][newCol] = 0;
-                        this.emptyPos = { row: newRow, col: newCol };
+                        if (validMoves.length > 0) {
+                            const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+                            const newRow = this.emptyPos.row + randomMove.row;
+                            const newCol = this.emptyPos.col + randomMove.col;
+                            
+                            // Перемещаем плитку
+                            this.board[this.emptyPos.row][this.emptyPos.col] = this.board[newRow][newCol];
+                            this.board[newRow][newCol] = 0;
+                            this.emptyPos = { row: newRow, col: newCol };
+                        }
                     }
-                }
+                    attempts++;
+                    
+                    // Защита от бесконечного цикла
+                    if (attempts > 100) {
+                        // Если не удалось создать решаемую комбинацию, создаем новую доску
+                        this.createBoard();
+                        attempts = 0;
+                    }
+                } while (this.checkWin() || !this.isSolvable());
                 
                 this.moves = 0;
                 this.updateUI();
