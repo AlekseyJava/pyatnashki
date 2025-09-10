@@ -9,6 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -21,12 +22,13 @@
             justify-content: center;
             padding: 20px;
             color: #333;
+            touch-action: manipulation;
         }
 
         .container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             text-align: center;
             max-width: 500px;
@@ -35,20 +37,20 @@
 
         h1 {
             color: #4a5568;
-            margin-bottom: 20px;
-            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-size: 2rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .game-info {
             display: flex;
             justify-content: space-around;
-            margin: 20px 0;
-            padding: 15px;
+            margin: 15px 0;
+            padding: 12px;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 15px;
+            border-radius: 12px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .stat {
@@ -59,43 +61,44 @@
 
         .stat span {
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         .game-board {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 4px;
+            gap: 3px;
             width: 100%;
             max-width: 400px;
-            height: 400px;
+            height: 300px;
             margin: 0 auto;
             background: #2d3748;
-            padding: 5px;
-            border-radius: 10px;
+            padding: 4px;
+            border-radius: 8px;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
             position: relative;
+            touch-action: none;
         }
 
         .tile {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
             user-select: none;
+            -webkit-user-select: none;
         }
 
-        .tile:hover {
-            transform: scale(0.98);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        .tile:active {
+            transform: scale(0.95);
         }
 
         .empty {
@@ -105,39 +108,31 @@
             visibility: hidden;
         }
 
-        .empty:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
         .controls {
-            margin: 25px 0;
+            margin: 20px 0;
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         button {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 10px 20px;
+            border-radius: 20px;
             color: white;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
         }
 
         button:active {
-            transform: translateY(0);
+            transform: translateY(1px);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
         }
 
         #shuffleBtn {
@@ -164,6 +159,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease;
+            padding: 20px;
         }
 
         .victory.show {
@@ -172,41 +168,46 @@
         }
 
         .victory h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 15px;
             color: #ffd700;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            text-align: center;
         }
 
         .victory p {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .difficulty {
-            margin: 15px 0;
+            margin: 12px 0;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .difficulty-btn {
-            padding: 8px 15px;
-            font-size: 0.9rem;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            min-width: 60px;
         }
 
         .instructions {
-            margin-top: 25px;
-            padding: 15px;
+            margin-top: 20px;
+            padding: 12px;
             background: rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: left;
+            font-size: 0.9rem;
         }
 
         .instructions h3 {
             color: #4a5568;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
 
         .instructions ul {
@@ -215,8 +216,8 @@
         }
 
         .instructions li {
-            margin: 8px 0;
-            padding-left: 25px;
+            margin: 6px 0;
+            padding-left: 20px;
             position: relative;
         }
 
@@ -224,30 +225,11 @@
             content: "➡️";
             position: absolute;
             left: 0;
+            font-size: 0.8rem;
         }
 
-        @media (max-width: 500px) {
-            .game-board {
-                height: 300px;
-                max-width: 300px;
-            }
-            
-            .tile {
-                font-size: 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            button {
-                width: 200px;
-            }
+        .swipe-area {
+            display: none;
         }
 
         .tile.moving {
@@ -262,16 +244,136 @@
 
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: #ff0000;
             animation: fall linear forwards;
+            z-index: 1001;
         }
 
         @keyframes fall {
             to {
                 transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
+            }
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+                margin-bottom: 12px;
+            }
+            
+            .game-board {
+                height: 250px;
+                max-width: 300px;
+            }
+            
+            .tile {
+                font-size: 1.3rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 200px;
+                padding: 12px;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 8px;
+                padding: 10px;
+            }
+            
+            .stat {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            .swipe-area {
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+                font-size: 0.9rem;
+                color: #4a5568;
+                background: rgba(0, 0, 0, 0.05);
+                padding: 8px;
+                border-radius: 8px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .game-board {
+                height: 220px;
+                max-width: 260px;
+            }
+            
+            .tile {
+                font-size: 1.1rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .difficulty {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .difficulty-btn {
+                width: 100%;
+                max-width: 120px;
+            }
+        }
+
+        /* Планшеты */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .game-board {
+                height: 350px;
+                max-width: 350px;
+            }
+            
+            .tile {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Ландшафтная ориентация */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                padding: 10px;
+                margin: 5px;
+            }
+            
+            .game-board {
+                height: 200px;
+                max-width: 200px;
+            }
+            
+            .tile {
+                font-size: 1rem;
+            }
+            
+            .controls {
+                margin: 10px 0;
+            }
+            
+            .instructions {
+                display: none;
             }
         }
     </style>
@@ -299,6 +401,10 @@
             <!-- Плитки будут сгенерированы JavaScript -->
         </div>
 
+        <div class="swipe-area">
+            ⬅️➡️⬆️⬇️ Используйте свайпы для перемещения плиток
+        </div>
+
         <div class="controls">
             <button id="shuffleBtn">Перемешать</button>
             <button id="newGameBtn">Новая игра</button>
@@ -309,9 +415,9 @@
             <h3>Как играть:</h3>
             <ul>
                 <li>Кликайте на плитки, чтобы перемещать их в пустое место</li>
+                <li>Используйте свайпы для перемещения плиток на телефоне</li>
                 <li>Расположите плитки в порядке от 1 до 15</li>
                 <li>Пустая ячейка должна быть в правом нижнем углу</li>
-                <li>Старайтесь решить головоломку за минимальное количество ходов и времени</li>
             </ul>
         </div>
     </div>
@@ -341,6 +447,8 @@
                 this.timer = 0;
                 this.timerInterval = null;
                 this.gameStarted = false;
+                this.touchStartX = 0;
+                this.touchStartY = 0;
                 
                 this.init();
                 this.setupEventListeners();
@@ -392,6 +500,15 @@
                             tile.innerHTML = value;
                             tile.dataset.row = i;
                             tile.dataset.col = j;
+                            
+                            // Добавляем обработчики для мобильных устройств
+                            tile.addEventListener('touchstart', (e) => {
+                                e.preventDefault();
+                                const row = parseInt(e.target.dataset.row);
+                                const col = parseInt(e.target.dataset.col);
+                                this.moveTile(row, col);
+                            });
+                            
                             tile.addEventListener('click', (e) => {
                                 const row = parseInt(e.target.dataset.row);
                                 const col = parseInt(e.target.dataset.col);
@@ -599,6 +716,37 @@
                 this.init();
             }
             
+            handleSwipe(direction) {
+                if (!this.gameStarted) {
+                    this.startTimer();
+                    this.gameStarted = true;
+                }
+                
+                let moveRow = this.emptyPos.row;
+                let moveCol = this.emptyPos.col;
+                
+                switch(direction) {
+                    case 'up':
+                        moveRow++;
+                        break;
+                    case 'down':
+                        moveRow--;
+                        break;
+                    case 'left':
+                        moveCol++;
+                        break;
+                    case 'right':
+                        moveCol--;
+                        break;
+                    default:
+                        return;
+                }
+                
+                if (moveRow >= 0 && moveRow < this.boardSize && moveCol >= 0 && moveCol < this.boardSize) {
+                    this.moveTile(moveRow, moveCol);
+                }
+            }
+            
             setupEventListeners() {
                 document.getElementById('shuffleBtn').addEventListener('click', () => this.shuffleBoard());
                 document.getElementById('newGameBtn').addEventListener('click', () => this.init());
@@ -635,6 +783,47 @@
                         this.moveTile(moveRow, moveCol);
                     }
                 });
+                
+                // Обработка свайпов для мобильных устройств
+                let touchStartX = 0;
+                let touchStartY = 0;
+                
+                this.gameBoard.addEventListener('touchstart', (e) => {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    e.preventDefault();
+                }, { passive: false });
+                
+                this.gameBoard.addEventListener('touchend', (e) => {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    
+                    const diffX = touchEndX - touchStartX;
+                    const diffY = touchEndY - touchStartY;
+                    
+                    // Определяем направление свайпа
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        // Горизонтальный свайп
+                        if (Math.abs(diffX) > 30) { // Минимальная дистанция свайпа
+                            if (diffX > 0) {
+                                this.handleSwipe('right');
+                            } else {
+                                this.handleSwipe('left');
+                            }
+                        }
+                    } else {
+                        // Вертикальный свайп
+                        if (Math.abs(diffY) > 30) { // Минимальная дистанция свайпа
+                            if (diffY > 0) {
+                                this.handleSwipe('down');
+                            } else {
+                                this.handleSwipe('up');
+                            }
+                        }
+                    }
+                    
+                    e.preventDefault();
+                }, { passive: false });
             }
         }
         
